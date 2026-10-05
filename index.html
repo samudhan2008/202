@@ -288,7 +288,7 @@ $('#lg').onclick=async()=>{$('#le').textContent='';if(!$('#pw').value)return $('
   try{await auth('password',{email:$('#em').value.trim(),password:$('#pw').value});boot()}catch(e){$('#le').textContent=e.message}
 };
 $('#sp').onclick=()=>{const p=$('#pw'),h=p.type==='password';p.type=h?'text':'password';$('#sp').textContent=h?'Hide':'Show';p.focus()};
-$('#pw').onkeydown=e=>e.key==='Enter'&&$('#lg').click();
+$('#pw').addEventListener('keydown',e=>{if(e.key==='Enter')$('#lg').click()});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 boot();
 </script></body></html>
