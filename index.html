@@ -67,7 +67,7 @@ small,.mu{color:var(--mu)}
 <div id="login" class="g" hidden>
   <h2>My Music</h2>
   <input id="em" type="email" placeholder="Email" autocomplete="username">
-  <input id="pw" type="password" placeholder="Password" autocomplete="current-password">
+  <div style="display:flex;gap:6px"><input id="pw" type="password" placeholder="Password" autocomplete="current-password" style="flex:1;min-width:0"><button type="button" id="sp" aria-label="Show password">Show</button></div>
   <button class="pri" id="lg">Sign in</button><small id="le"></small>
 </div>
 
@@ -105,7 +105,7 @@ small,.mu{color:var(--mu)}
 <script src="https://cdn.jsdelivr.net/npm/megajs@1.3.4/dist/main.browser-umd.js"></script>
 <script>
 /* ====== CONFIG: paste your Supabase values ====== */
-const CFG={SB:'https://cajsimogfxjsiwhymare.supabase.co',KEY:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhanNpbW9nZnhqc2l3aHltYXJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyMDk2NzUsImV4cCI6MjEwNjc4NTY3NX0.FBTZ5mM_PCAXKfM4rqBBVmJxv_ESFqs8zx6AzO2gO9s'};
+const CFG={SB:'https://YOUR-PROJECT.supabase.co',KEY:'YOUR-ANON-KEY'};
 
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -117,7 +117,7 @@ document.body.dataset.t=localStorage.theme||'frost';$('#th').value=document.body
 /* ---------- Supabase (REST, no SDK) ---------- */
 async function auth(grant,body){
   const r=await fetch(CFG.SB+'/auth/v1/token?grant_type='+grant,{method:'POST',headers:{apikey:CFG.KEY,'Content-Type':'application/json'},body:JSON.stringify(body)});
-  if(!r.ok)throw new Error((await r.json()).error_description||'Sign-in failed');
+  if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.msg||j.error_description||j.message||'Sign-in failed (HTTP '+r.status+')')}
   S=await r.json();localStorage.sess=JSON.stringify(S);
 }
 async function sb(path,opt={}){
@@ -284,9 +284,10 @@ async function boot(){
   $('#login').hidden=true;$('#app').hidden=false;
   try{await load()}catch(e){$('#view').innerHTML='<p>Could not load your library: '+esc(e.message)+'</p>'}
 }
-$('#lg').onclick=async()=>{
-  try{await auth('password',{email:$('#em').value,password:$('#pw').value});boot()}catch(e){$('#le').textContent=e.message}
+$('#lg').onclick=async()=>{$('#le').textContent='';if(!$('#pw').value)return $('#le').textContent='Enter your password.';
+  try{await auth('password',{email:$('#em').value.trim(),password:$('#pw').value});boot()}catch(e){$('#le').textContent=e.message}
 };
+$('#sp').onclick=()=>{const p=$('#pw'),h=p.type==='password';p.type=h?'text':'password';$('#sp').textContent=h?'Hide':'Show';p.focus()};
 $('#pw').onkeydown=e=>e.key==='Enter'&&$('#lg').click();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 boot();
