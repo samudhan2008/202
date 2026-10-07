@@ -1,294 +1,151 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>My Music</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#e4f0fa">
+<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#e4f0fa">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Figtree:wght@400;600;800&family=Syne:wght@600;800&family=Rubik:wght@400;500&family=Bowlby+One&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-<style>
-[data-t=frost]{--f:Outfit;--bg:radial-gradient(circle at 15% 10%,#a9d8ff,transparent 45%),radial-gradient(circle at 90% 30%,#d3c0ff,transparent 45%),#e4f0fa;--tx:#0f2f48;--mu:#46688a;--c:rgba(255,255,255,.4);--ac:#2f7fc1;--bd:rgba(255,255,255,.8);--bl:blur(18px)}
-[data-t=tide]{--f:Figtree;--bg:#e9eff1;--tx:#17303a;--mu:#5b7580;--c:#fff;--ac:#2d8f85;--bd:#dfe8eb}
-[data-t=glow]{--f:Syne;--bg:radial-gradient(circle at 50% 0,#3b1670,#120a24 65%);--tx:#fff;--mu:#b9a8e0;--c:rgba(255,255,255,.08);--ac:#ff3d9a;--bd:rgba(255,255,255,.14);--ar:50%;--as:0 0 50px #ff3d9a88}
-[data-t=groove]{--f:Rubik;--hf:'Bowlby One';--hw:400;--bg:#3a2214;--tx:#fbe9c8;--mu:#d9b98a;--c:rgba(251,233,200,.08);--ac:#e9a23b;--af:#3a2214;--bd:rgba(251,233,200,.35);--bw:2px;--r:8px;--br:8px;--rb:8px;--ir:6px;--ar:6px;--as:8px 8px 0 #0007}
-[data-t=pop]{--f:'Space Grotesk';--hf:'Bowlby One';--hw:400;--bg:#ffe14d;--tx:#111;--mu:#333;--c:#fff;--ac:#ff6fb5;--af:#111;--hl:#4d7cff;--bd:#111;--bw:3px;--r:6px;--br:10px;--rb:12px;--ir:4px;--ar:4px;--as:8px 8px 0 #111;--sh:4px 4px 0 #111}
-[data-t=lyric]{--f:Syne;--bg:#1f3dff;--tx:#fff;--mu:rgba(255,255,255,.72);--c:rgba(255,255,255,.12);--ac:#fff;--af:#1f3dff;--bd:rgba(255,255,255,.45);--bw:2px;--r:0px;--br:0px;--rb:0px;--ir:0px;--ar:0px}
-[data-t=dusk]{--f:Outfit;--bg:linear-gradient(170deg,#ffb066,#d8508f 50%,#3b2a7a);--tx:#fff;--mu:rgba(255,255,255,.82);--c:rgba(42,26,92,.45);--ac:#fff;--af:#c2407e;--bd:rgba(255,255,255,.22);--bl:blur(10px)}
-*{box-sizing:border-box;margin:0}
-html,body{min-height:100%}
-body{background:var(--bg) fixed;color:var(--tx);font:15px/1.4 var(--f,Outfit),system-ui,sans-serif;padding:env(safe-area-inset-top) 0 calc(86px + env(safe-area-inset-bottom))}
-button,input,select{font:inherit;color:inherit}
-button{cursor:pointer;border:var(--bw,1px) solid var(--bd);background:var(--c);backdrop-filter:var(--bl);-webkit-backdrop-filter:var(--bl);border-radius:var(--br,99px);padding:8px 16px;box-shadow:var(--sh,none);font-weight:600}
-button.pri{background:var(--ac);color:var(--af,#fff);border-color:var(--bd)}
-button:focus-visible,input:focus-visible,.row:focus-visible,.card:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
-input,select{background:var(--c);border:var(--bw,1px) solid var(--bd);border-radius:var(--ir,12px);padding:8px 10px;max-width:100%}
-.g{background:var(--c);backdrop-filter:var(--bl);-webkit-backdrop-filter:var(--bl);border:var(--bw,1px) solid var(--bd);border-radius:var(--r,20px);box-shadow:var(--sh,none)}
-nav.g{border-radius:0 0 var(--r,20px) var(--r,20px)}
-nav{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:14px 18px;position:sticky;top:0;z-index:5}
-nav b{font-size:20px;font-weight:800;margin-right:auto}
-nav .on{background:var(--ac);color:var(--af,#fff)}
-#view{max-width:1000px;margin:0 auto;padding:8px 18px}
-h2,#full h3,nav b{font-family:var(--hf,inherit);font-weight:var(--hw,800)}
-h2{font-size:22px;margin:6px 0 12px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
-.card{cursor:pointer;padding:10px}
-.card img,.card .ph{width:100%;aspect-ratio:1;border-radius:var(--ir,14px);object-fit:cover;display:block;background:var(--bd)}
-.card p{margin-top:8px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-small,.mu{color:var(--mu)}
-.row{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:var(--ir,14px);cursor:pointer}
-.row:hover,.row.now{background:var(--c)}
-.row.now b{color:var(--hl,var(--ac))}
-.row img,.row .ph{width:44px;height:44px;border-radius:var(--ir,10px);object-fit:cover;background:var(--bd);flex:none}
-.row div{min-width:0}.row b,.row small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hd{display:flex;gap:18px;align-items:flex-end;margin-bottom:14px;flex-wrap:wrap}
-.hd img,.hd .ph{width:180px;height:180px;border-radius:var(--ir,20px);object-fit:cover;background:var(--bd)}
-#dock{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:6;display:none;align-items:center;gap:12px;padding:8px 12px;max-width:760px;margin:0 auto;cursor:pointer}
-#dock img{width:46px;height:46px;border-radius:var(--ir,12px);object-fit:cover;background:var(--bd)}
-#dock div{flex:1;min-width:0}#dock b,#dock small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rb{width:44px;height:44px;padding:0;border-radius:var(--rb,50%);display:grid;place-items:center}
-#full{position:fixed;inset:0;z-index:9;background:var(--bg);display:none;flex-direction:column;align-items:center;padding:calc(18px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom));overflow:auto}
-#full.open{display:flex}
-#fa{width:min(80vw,380px);aspect-ratio:1;border-radius:var(--ar,28px);object-fit:cover;margin:16px 0;background:var(--bd);box-shadow:var(--as,0 14px 40px #0003)}
-#full h3{font-size:26px;text-align:center}
-#sk{width:min(90vw,520px);accent-color:var(--ac);margin:18px 0 2px}
-.tm{display:flex;justify-content:space-between;width:min(90vw,520px);font-size:12px;color:var(--mu)}
-.ctl{display:flex;gap:14px;align-items:center;margin:16px 0}
-.ctl .pp{width:68px;height:68px;font-size:22px}
-.pp{background:var(--ac);color:var(--af,#fff)}
-[data-t=lyric] #fa{display:none}
-[data-t=lyric] #full{align-items:flex-start}
-[data-t=lyric] #full h3{font-size:clamp(36px,10vw,64px);line-height:1.02;text-align:left;margin-top:28px;max-width:100%}
-[data-t=groove] #fa.spin{border-radius:50%;box-shadow:none;background:repeating-radial-gradient(#111 0 2px,#1d1d1d 3px 4px);padding:18%;object-fit:cover;animation:sp 6s linear infinite}
-@keyframes sp{to{transform:rotate(360deg)}}
-@media(prefers-reduced-motion:reduce){[data-t=groove] #fa.spin{animation:none}}
-#login{max-width:340px;margin:12vh auto;padding:24px;display:flex;flex-direction:column;gap:10px}
-.fm{display:flex;flex-direction:column;gap:10px;padding:16px;margin-bottom:14px}
-.fm .tr{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;padding:10px;border-radius:var(--ir,14px);border:1px dashed var(--bd)}
-.fm label{font-size:12px;color:var(--mu);display:flex;flex-direction:column;gap:3px}
-#log{white-space:pre-wrap;color:var(--mu)}
-</style></head><body data-t="frost">
-
-<div id="login" class="g" hidden>
-  <h2>My Music</h2>
-  <input id="em" type="email" placeholder="Email" autocomplete="username">
-  <div style="display:flex;gap:6px"><input id="pw" type="password" placeholder="Password" autocomplete="current-password" style="flex:1;min-width:0"><button type="button" id="sp" aria-label="Show password">Show</button></div>
-  <button class="pri" id="lg">Sign in</button><small id="le"></small>
-</div>
-
-<div id="app" hidden>
-  <nav class="g">
-    <b>My Music</b>
-    <button data-v="albums">Albums</button><button data-v="songs">Songs</button><button data-v="admin">Admin</button>
-    <select id="th" aria-label="Theme"><option value="frost">Frost</option><option value="tide">Tide</option><option value="glow">Afterglow</option><option value="groove">Groove</option><option value="pop">Pop</option><option value="lyric">Lyric</option><option value="dusk">Dusk</option></select>
-    <button id="so">Sign out</button>
-  </nav>
-  <main id="view"></main>
-</div>
-
-<div id="dock" class="g">
-  <img id="da" alt=""><div><b id="dt"></b><small id="dr"></small></div>
-  <button class="rb pp" aria-label="Play or pause">▶</button>
-</div>
-
-<section id="full">
-  <button id="fc" style="align-self:flex-start">Close</button>
-  <img id="fa" alt="">
-  <h3 id="ft"></h3><p class="mu" id="fr"></p>
-  <input id="sk" type="range" min="0" max="1000" value="0" aria-label="Seek">
-  <div class="tm"><span id="tc">0:00</span><span id="td">0:00</span></div>
-  <div class="ctl">
-    <button class="rb" id="sh" aria-label="Shuffle">⤮</button>
-    <button class="rb" id="pv" aria-label="Previous">⏮</button>
-    <button class="rb pp" aria-label="Play or pause">▶</button>
-    <button class="rb" id="nx" aria-label="Next">⏭</button>
-    <button class="rb" id="rp" aria-label="Repeat">↻</button>
+<link rel="stylesheet" href="/assets/style.css"></head><body>
+<div id="shell" hidden>
+  <aside id="side"><div class="brand">♪ My Music</div>
+    <a href="#/">Home</a><a href="#/albums">Albums</a><a href="#/songs">Songs</a><a href="#/settings">Settings</a>
+    <span class="sp"></span><a href="/admin">Admin panel</a></aside>
+  <div id="main">
+    <header id="top"><form id="sf" role="search"><input id="q" type="search" placeholder="Search songs, albums, artists" aria-label="Search"></form></header>
+    <main id="view"></main>
   </div>
-  <button id="ql"></button>
-</section>
-
-<script src="https://cdn.jsdelivr.net/npm/megajs@1.3.4/dist/main.browser-umd.js"></script>
+  <div id="bar" hidden>
+    <div class="np" data-act="open"><img id="ba" alt=""><div><b id="bt"></b><small id="br"></small></div><button class="ib mini" data-act="play" aria-label="Play or pause">▶</button></div>
+    <div id="bmid"></div>
+    <div class="rt"><button class="btn sm" data-act="ql"></button><input id="vol" type="range" min="0" max="100" value="100" aria-label="Volume"></div>
+  </div>
+  <section id="full" aria-label="Now playing">
+    <button class="btn" data-act="close" style="align-self:flex-start">Close</button>
+    <img id="fa" alt=""><h2 id="ft"></h2><p class="mu" id="fr"></p><div id="fctl"></div>
+    <button class="btn sm" data-act="ql" style="margin-top:12px"></button>
+  </section>
+  <nav id="tabs"><a href="#/">Home</a><a href="#/albums">Albums</a><a href="#/songs">Songs</a><a href="#/settings">Settings</a></nav>
+</div>
+<script src="/assets/config.js"></script><script src="/assets/core.js"></script>
 <script>
-/* ====== CONFIG: paste your Supabase values ====== */
-const CFG={SB:'https://cajsimogfxjsiwhymare.supabase.co',KEY:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhanNpbW9nZnhqc2l3aHltYXJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyMDk2NzUsImV4cCI6MjEwNjc4NTY3NX0.FBTZ5mM_PCAXKfM4rqBBVmJxv_ESFqs8zx6AzO2gO9s'};
+const {$,$$,esc,fmt,img,sb}=MM,view=$('#view'),au=new Audio();
+let albums=[],tracks=[],byAl=new Map(),ctx=[],q=[],qi=-1,tok=0,genre='',quality=+localStorage.mm_q||320,shuf=false,rep=0;
+const pub=x=>x.published!==false,al=t=>byAl.get(t.album_id),artOf=t=>t.art_link||al(t)?.cover_link,who=t=>t.artist||al(t)?.artist||'';
+const albTracks=id=>tracks.filter(t=>t.album_id===id).sort((a,b)=>(a.track_no||0)-(b.track_no||0));
+const linkFor=t=>quality===320?t.link_320||t.link_128:t.link_128||t.link_320;
+const THEMES=[['frost','Frost'],['tide','Tide'],['glow','Afterglow'],['groove','Groove'],['pop','Pop'],['lyric','Lyric'],['dusk','Dusk']];
 
-const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
-const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const fmt=s=>isFinite(s)?Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'):'0:00';
-let S=JSON.parse(localStorage.sess||'null'),albums=[],tracks=[],cur=[],q=[],qi=-1,tok=0,view='albums',sel=null,MS=null;
-let quality=+localStorage.q||320,shuf=false,rep=0;
-document.body.dataset.t=localStorage.theme||'frost';$('#th').value=document.body.dataset.t;
+/* ---------- templates ---------- */
+const card=a=>`<a class="card" href="#/album/${a.id}">${img(a.cover_link)}<b>${esc(a.title)}</b><small>${esc(a.artist||'')}${a.year?' · '+a.year:''}</small></a>`;
+const row=(t,i)=>`<div class="rw" data-play="${i}" data-tid="${t.id}" tabindex="0"><span class="n">${i+1}</span>${img(artOf(t))}<div class="m"><b>${esc(t.title)}</b><small>${esc(who(t))}</small></div><span class="alb">${al(t)?esc(al(t).title):'Single'}</span><span class="q">${t.link_320?'320 ':''}${t.link_128?'128':''}</span><span class="d">${fmt(t.duration)}</span></div>`;
+const rows=l=>(ctx=l,l.length?`<div class="list">${l.map(row).join('')}</div>`:'<p class="mu empty">Nothing here yet.</p>');
+const hero=a=>`<section class="hero panel">${img(a.cover_link)}<div><small class="eyebrow">Featured</small><h1>${esc(a.title)}</h1><p class="mu">${esc(a.artist||'')}${a.genre?' · '+esc(a.genre):''}</p>${a.description?`<p>${esc(a.description)}</p>`:''}<div class="acts"><button class="btn pri" data-act="playalbum" data-id="${a.id}">▶ Play</button><a class="btn" href="#/album/${a.id}">View album</a></div></div></section>`;
 
-/* ---------- Supabase (REST, no SDK) ---------- */
-async function auth(grant,body){
-  const r=await fetch(CFG.SB+'/auth/v1/token?grant_type='+grant,{method:'POST',headers:{apikey:CFG.KEY,'Content-Type':'application/json'},body:JSON.stringify(body)});
-  if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.msg||j.error_description||j.message||'Sign-in failed (HTTP '+r.status+')')}
-  S=await r.json();localStorage.sess=JSON.stringify(S);
+/* ---------- pages ---------- */
+function home(){
+  if(!albums.length&&!tracks.length)return '<section class="panel empty"><h2>Your library is empty</h2><p class="mu" style="margin:8px 0 16px">Add your first album in the admin panel.</p><a class="btn pri" href="/admin">Open admin</a></section>';
+  const f=albums.find(a=>a.featured)||albums[0];
+  return (f?hero(f):'')+(albums.length?`<div class="sec"><h2>New albums</h2><a class="mu" href="#/albums">See all</a></div><div class="grid">${albums.slice(0,8).map(card).join('')}</div>`:'')
+   +`<div class="sec"><h2>Recently added songs</h2><a class="mu" href="#/songs">See all</a></div>`+rows(tracks.slice(0,8));
 }
-async function sb(path,opt={}){
-  const go=()=>fetch(CFG.SB+path,{...opt,headers:{apikey:CFG.KEY,Authorization:'Bearer '+S.access_token,'Content-Type':'application/json',Prefer:'return=representation',...opt.headers}});
-  let r=await go();
-  if(r.status===401){try{await auth('refresh_token',{refresh_token:S.refresh_token});r=await go()}catch{signOut();throw new Error('Session expired')}}
-  if(!r.ok)throw new Error(await r.text());
-  return r.status===204?null:r.json();
+function albumsPage(){
+  const gs=[...new Set(albums.map(a=>a.genre).filter(Boolean))],l=genre?albums.filter(a=>a.genre===genre):albums;
+  return `<h1>Albums</h1>${gs.length?`<div class="chips"><button class="btn sm${genre?'':' pri'}" data-act="genre" data-v="">All</button>${gs.map(g=>`<button class="btn sm${genre===g?' pri':''}" data-act="genre" data-v="${esc(g)}">${esc(g)}</button>`).join('')}</div>`:''}<div class="grid" style="margin-top:18px">${l.map(card).join('')||'<p class="mu">No albums.</p>'}</div>`;
 }
-async function load(){
-  albums=await sb('/rest/v1/albums?select=*&order=created_at.desc');
-  tracks=await sb('/rest/v1/tracks?select=*&order=track_no');
-  render();
+function albumPage(id){
+  const a=byAl.get(id);if(!a)return '<h1>Album not found</h1>';
+  const l=albTracks(id),tot=l.reduce((n,t)=>n+(t.duration||0),0);
+  return `<section class="hero panel">${img(a.cover_link)}<div><small class="eyebrow">Album</small><h1>${esc(a.title)}</h1><p class="mu">${esc(a.artist||'')}${a.year?' · '+a.year:''}${a.genre?' · '+esc(a.genre):''} · ${l.length} songs${tot?' · '+Math.round(tot/60)+' min':''}</p>${a.description?`<p>${esc(a.description)}</p>`:''}<div class="acts"><button class="btn pri" data-act="playall">▶ Play</button><button class="btn" data-act="shufall">⤮ Shuffle</button></div></div></section><div style="margin-top:16px">${rows(l)}</div>`;
 }
-function signOut(){localStorage.removeItem('sess');location.reload()}
+const songsPage=()=>'<h1 style="margin-bottom:14px">Songs</h1>'+rows([...tracks].sort((a,b)=>a.title.localeCompare(b.title)));
+function searchPage(s){
+  s=(s||'').trim().toLowerCase();if(document.activeElement!==$('#q'))$('#q').value=s;
+  if(!s)return '<h1>Search</h1><p class="mu">Type to search your library.</p>';
+  const m=(...v)=>v.some(x=>String(x||'').toLowerCase().includes(s));
+  const A=albums.filter(a=>m(a.title,a.artist,a.genre)),T=tracks.filter(t=>m(t.title,t.artist,al(t)?.title));
+  return `<h1>Results for “${esc(s)}”</h1>${A.length?`<h2 class="sec">Albums</h2><div class="grid">${A.map(card).join('')}</div>`:''}<h2 class="sec">Songs</h2>${rows(T)}`;
+}
+function settingsPage(){
+  const t=document.documentElement.dataset.t;
+  return `<h1>Settings</h1><section class="panel"><h3>Theme</h3><div class="chips">${THEMES.map(([k,n])=>`<button class="btn${t===k?' pri':''}" data-act="theme" data-v="${k}">${n}</button>`).join('')}</div></section>
+  <section class="panel"><h3>Audio quality</h3><div class="chips">${[128,320].map(k=>`<button class="btn${quality===k?' pri':''}" data-act="setq" data-v="${k}">${k} kbps</button>`).join('')}</div><small>Falls back to the other file when one is missing.</small></section>
+  <section class="panel"><h3>Account</h3><div class="chips"><button class="btn" data-act="out">Sign out</button><a class="btn" href="/admin">Admin panel</a></div></section>`;
+}
+const routes=[[/^\/?$/,home],[/^\/albums$/,albumsPage],[/^\/album\/(.+)$/,albumPage],[/^\/songs$/,songsPage],[/^\/search\/?(.*)$/,searchPage],[/^\/settings$/,settingsPage]];
+function route(){
+  const h=decodeURIComponent(location.hash.slice(1))||'/';
+  for(const [r,f] of routes){const m=h.match(r);if(m){view.innerHTML=f(...m.slice(1));break}}
+  MM.hydrate(view);markNow();
+  $$('#side a[href^="#"],#tabs a').forEach(a=>{const p=a.getAttribute('href').slice(1);a.classList.toggle('on',p==='/'?h==='/':h.startsWith(p))});
+  scrollTo(0,0);
+}
+addEventListener('hashchange',route);
+let st;$('#q').oninput=e=>{clearTimeout(st);st=setTimeout(()=>{location.hash='#/search/'+encodeURIComponent(e.target.value)},250)};
+$('#sf').onsubmit=e=>e.preventDefault();
 
-/* ---------- Mega: public-link download + decrypt in the browser ---------- */
-const cache=new Map(),audioKeys=[];
-function blob(link,audio){
-  if(!cache.has(link))cache.set(link,(async()=>{
-    const f=mega.File.fromURL(link);await f.loadAttributes();
-    const n=(f.name||'').toLowerCase(),type=!audio?'':/\.(m4a|aac)$/.test(n)?'audio/mp4':/\.flac$/.test(n)?'audio/flac':/\.(ogg|opus)$/.test(n)?'audio/ogg':'audio/mpeg';
-    return URL.createObjectURL(new Blob([await f.downloadBuffer()],type?{type}:{}));
-  })());
-  if(audio){audioKeys.push(link);if(audioKeys.length>4){const old=audioKeys.shift();cache.get(old)?.then(URL.revokeObjectURL);cache.delete(old)}}
-  return cache.get(link);
-}
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){io.unobserve(e.target);blob(e.target.dataset.l).then(u=>e.target.src=u).catch(()=>{})}}),{rootMargin:'200px'});
-const hydrate=()=>$$('img[data-l]').forEach(i=>io.observe(i));
-const img=l=>l?`<img data-l="${esc(l)}" alt="">`:'<div class="ph"></div>';
-const albumOf=t=>albums.find(a=>a.id===t.album_id);
-const artOf=t=>t.art_link||albumOf(t)?.cover_link;
-
-/* ---------- Views ---------- */
-function rowHTML(t,i){const a=albumOf(t);return `<div class="row${q[qi]?.id===t.id?' now':''}" tabindex="0" data-i="${i}">${img(artOf(t))}<div><b>${esc(t.title)}</b><small>${esc(t.artist||a?.artist||'')}${a?' • '+esc(a.title):''}</small></div></div>`}
-function render(){
-  const v=$('#view');
-  $$('nav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===view));
-  if(view==='albums'&&!sel){
-    const singles=tracks.filter(t=>!t.album_id);
-    v.innerHTML='<h2>Albums</h2>'+(albums.length?`<div class="grid">${albums.map(a=>`<div class="card g" tabindex="0" data-a="${a.id}">${img(a.cover_link)}<p>${esc(a.title)}</p><small>${esc(a.artist||'')}${a.year?' • '+a.year:''}</small></div>`).join('')}</div>`:'<p class="mu">No albums yet. Add your first one in Admin.</p>')+(singles.length?`<h2 style="margin-top:24px">Singles</h2><div id="sl">${singles.map((t,i)=>rowHTML(t,i)).join('')}</div>`:'');
-    cur=singles;
-  }else if(view==='albums'){
-    const a=albums.find(x=>x.id===sel);cur=tracks.filter(t=>t.album_id===sel);
-    v.innerHTML=`<button id="bk">Back</button><div class="hd" style="margin-top:14px">${img(a.cover_link)}<div><h2>${esc(a.title)}</h2><p class="mu">${esc(a.artist||'')}${a.year?' • '+a.year:''}</p><button class="pri" id="pa" style="margin-top:10px">Play album</button></div></div>${cur.map((t,i)=>rowHTML(t,i)).join('')}`;
-  }else if(view==='songs'){
-    cur=tracks;v.innerHTML='<h2>All songs</h2>'+(tracks.length?tracks.map((t,i)=>rowHTML(t,i)).join(''):'<p class="mu">Nothing here yet.</p>');
-  }else adminView();
-  hydrate();
-}
-$('#view').addEventListener('click',e=>{
-  const c=e.target.closest('[data-a]'),r=e.target.closest('.row'),d=e.target.closest('[data-del]');
-  if(c){sel=c.dataset.a;render()}
-  else if(e.target.closest('#bk')){sel=null;render()}
-  else if(e.target.closest('#pa'))start(0);
-  else if(r)start(+r.dataset.i);
-  else if(d)del(d.dataset.del,d.dataset.id);
-});
-$('#view').addEventListener('keydown',e=>{if(e.key==='Enter')e.target.click?.()});
-$$('nav [data-v]').forEach(b=>b.onclick=()=>{view=b.dataset.v;sel=null;render()});
-const vinyl=()=>$('#fa').classList.toggle('spin',document.body.dataset.t==='groove');
-$('#th').onchange=e=>{document.body.dataset.t=localStorage.theme=e.target.value;vinyl()};vinyl();
-$('#so').onclick=signOut;
-
-/* ---------- Player ---------- */
-const au=new Audio();
-const pps=()=>$$('.pp');
-function start(i){q=cur.slice();play(i)}
+/* ---------- player ---------- */
+const ctl=()=>`<div class="ctl"><button class="ib" data-act="shuf" aria-label="Shuffle" aria-pressed="false">⤮</button><button class="ib" data-act="prev" aria-label="Previous">⏮</button><button class="ib big" data-act="play" aria-label="Play or pause">▶</button><button class="ib" data-act="next" aria-label="Next">⏭</button><button class="ib" data-act="rep" aria-label="Repeat">↻</button></div><div class="seek"><span class="tc">0:00</span><input class="sk" type="range" min="0" max="1000" value="0" aria-label="Seek"><span class="td">0:00</span></div>`;
+$('#bmid').innerHTML=ctl();$('#fctl').innerHTML=ctl();
+const setPlay=t=>$$('[data-act=play]').forEach(b=>b.textContent=t);
+const qlab=()=>$$('[data-act=ql]').forEach(b=>b.textContent=quality+' kbps');qlab();
+const markNow=()=>$$('[data-tid]').forEach(r=>r.classList.toggle('now',!!q[qi]&&r.dataset.tid===q[qi].id));
+function start(i){q=ctx.slice();play(i)}
 async function play(i){
-  qi=i;const t=q[i],my=++tok;setNow(t);
-  const l=(quality===320?t.link_320||t.link_128:t.link_128||t.link_320);
-  if(!l)return;
-  pps().forEach(b=>b.textContent='…');
-  try{const u=await blob(l,true);if(my!==tok)return;au.src=u;await au.play();
-    const nx=q[i+1];const nl=nx&&(quality===320?nx.link_320||nx.link_128:nx.link_128||nx.link_320);if(nl)blob(nl,true).catch(()=>{});
-  }catch(e){if(my===tok)pps().forEach(b=>b.textContent='▶')}
-  render();
+  qi=i;const t=q[i],my=++tok;setNow(t);markNow();const l=linkFor(t);if(!l)return next();
+  setPlay('…');
+  try{const u=await MM.blob(l,true);if(my!==tok)return;au.src=u;await au.play();
+    const nx=q[i+1],nl=nx&&linkFor(nx);if(nl)MM.blob(nl,true).catch(()=>{});
+  }catch{if(my===tok)setPlay('▶')}
 }
 async function setNow(t){
-  const a=albumOf(t),art=artOf(t);
-  $('#dock').style.display='flex';
-  $('#dt').textContent=$('#ft').textContent=t.title;$('#dr').textContent=$('#fr').textContent=t.artist||a?.artist||'';
-  ['#da','#fa'].forEach(s=>$(s).removeAttribute('src'));
-  if(art){const u=await blob(art).catch(()=>null);if(u){$('#da').src=$('#fa').src=u}}
-  if('mediaSession' in navigator){navigator.mediaSession.metadata=new MediaMetadata({title:t.title,artist:t.artist||a?.artist||'',album:a?.title||'Single',artwork:art&&$('#da').src?[{src:$('#da').src}]:[]})}
+  $('#bar').hidden=false;
+  $('#bt').textContent=$('#ft').textContent=t.title;$('#br').textContent=$('#fr').textContent=who(t);
+  $('#ba').removeAttribute('src');$('#fa').removeAttribute('src');
+  const art=artOf(t);if(art){const u=await MM.blob(art).catch(()=>null);if(u){$('#ba').src=$('#fa').src=u}}
+  if('mediaSession' in navigator)navigator.mediaSession.metadata=new MediaMetadata({title:t.title,artist:who(t),album:al(t)?.title||'Single',artwork:$('#ba').src?[{src:$('#ba').src}]:[]});
 }
 function next(auto){
-  if(!q.length)return;
-  if(auto&&rep===2)return play(qi);
+  if(!q.length)return;if(auto&&rep===2)return play(qi);
   let i=shuf?Math.floor(Math.random()*q.length):qi+1;
-  if(i>=q.length){if(rep===1)i=0;else return pps().forEach(b=>b.textContent='▶')}
+  if(i>=q.length){if(rep===1)i=0;else return setPlay('▶')}
   play(i);
 }
 const prev=()=>au.currentTime>3?au.currentTime=0:play(Math.max(0,qi-1));
 au.onended=()=>next(true);
-au.onplay=au.onpause=()=>pps().forEach(b=>b.textContent=au.paused?'▶':'❚❚');
-au.ontimeupdate=()=>{if(au.duration){$('#sk').value=au.currentTime/au.duration*1000;$('#tc').textContent=fmt(au.currentTime);$('#td').textContent=fmt(au.duration)}};
-$('#sk').oninput=e=>{if(au.duration)au.currentTime=e.target.value/1000*au.duration};
-pps().forEach(b=>b.onclick=e=>{e.stopPropagation();au.src&&(au.paused?au.play():au.pause())});
-$('#nx').onclick=()=>next();$('#pv').onclick=prev;
-$('#sh').onclick=e=>{shuf=!shuf;e.target.style.background=shuf?'var(--ac)':''};
-$('#rp').onclick=e=>{rep=(rep+1)%3;e.target.textContent=['↻','🔁','🔂'][rep]};
-$('#dock').onclick=()=>$('#full').classList.add('open');
-$('#fc').onclick=()=>$('#full').classList.remove('open');
-const qlab=()=>$('#ql').textContent=`Quality: ${quality} kbps (tap to switch)`;qlab();
-$('#ql').onclick=()=>{quality=quality===320?128:320;localStorage.q=quality;qlab()};
+au.onplay=au.onpause=()=>setPlay(au.paused?'▶':'❚❚');
+au.ontimeupdate=()=>{if(au.duration){$$('.sk').forEach(s=>s.value=au.currentTime/au.duration*1000);$$('.tc').forEach(s=>s.textContent=fmt(au.currentTime)||'0:00');$$('.td').forEach(s=>s.textContent=fmt(au.duration))}};
+document.addEventListener('input',e=>{
+  if(e.target.classList.contains('sk')&&au.duration)au.currentTime=e.target.value/1000*au.duration;
+  if(e.target.id==='vol')au.volume=e.target.value/100;
+});
+const A={
+  play:()=>au.src?(au.paused?au.play():au.pause()):ctx.length&&start(0),
+  next:()=>next(),prev,
+  shuf:()=>{shuf=!shuf;$$('[data-act=shuf]').forEach(b=>b.setAttribute('aria-pressed',shuf))},
+  rep:()=>{rep=(rep+1)%3;$$('[data-act=rep]').forEach(b=>b.textContent=['↻','🔁','🔂'][rep])},
+  ql:()=>{quality=quality===320?128:320;localStorage.mm_q=quality;qlab()},
+  open:()=>$('#full').classList.add('open'),close:()=>$('#full').classList.remove('open'),
+  playall:()=>start(0),shufall:()=>{shuf=true;A.shuf();shuf=true;$$('[data-act=shuf]').forEach(b=>b.setAttribute('aria-pressed','true'));start(Math.floor(Math.random()*ctx.length))},
+  playalbum:b=>{ctx=albTracks(b.dataset.id);start(0)},
+  genre:b=>{genre=b.dataset.v;route()},
+  theme:b=>{document.documentElement.dataset.t=localStorage.mm_theme=b.dataset.v;route()},
+  setq:b=>{quality=+b.dataset.v;localStorage.mm_q=quality;qlab();route()},
+  out:MM.signOut
+};
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');
+  if(b&&A[b.dataset.act]){A[b.dataset.act](b);return}
+  const p=e.target.closest('[data-play]');if(p)start(+p.dataset.play);
+});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('[data-play]'))e.target.click()});
 if('mediaSession' in navigator){const m=navigator.mediaSession;m.setActionHandler('play',()=>au.play());m.setActionHandler('pause',()=>au.pause());m.setActionHandler('nexttrack',()=>next());m.setActionHandler('previoustrack',prev)}
 
-/* ---------- Admin ---------- */
-const trRow=()=>`<div class="tr"><label>Title<input class="t"></label><label>Artist (optional)<input class="ta"></label>
-<label>128 kbps file<input type="file" class="f1" accept="audio/*"></label><label>320 kbps file<input type="file" class="f3" accept="audio/*"></label>
-<label>Square track art<input type="file" class="fa" accept="image/*"></label></div>`;
-function adminView(){
-  $('#view').innerHTML=`<h2>Admin</h2>
-  <div class="fm g" id="mg">${MS?'<b>Mega connected</b>':`<b>1. Connect Mega</b><input id="me" type="email" placeholder="Mega email"><input id="mp" type="password" placeholder="Mega password"><button class="pri" id="mc">Connect</button><small>Kept in memory only, never stored.</small>`}</div>
-  <div class="fm g"><b>2. Add album or singles</b>
-    <small>Leave album title empty to add the tracks below as singles.</small>
-    <div class="tr"><label>Album title<input id="at"></label><label>Artist<input id="ar"></label><label>Year<input id="yr" type="number"></label><label>Square album art<input id="ac" type="file" accept="image/*"></label></div>
-    <div id="trs">${trRow()}</div>
-    <div><button id="atr">Add track</button> <button class="pri" id="sv">Upload and save</button></div><div id="log"></div></div>
-  <h2>Manage</h2>
-  ${albums.map(a=>`<div class="row"><div><b>${esc(a.title)}</b><small>${esc(a.artist||'')}</small></div><button data-del="albums" data-id="${a.id}" style="margin-left:auto">Delete</button></div>`).join('')}
-  ${tracks.filter(t=>!t.album_id).map(t=>`<div class="row"><div><b>${esc(t.title)}</b><small>Single</small></div><button data-del="tracks" data-id="${t.id}" style="margin-left:auto">Delete</button></div>`).join('')}
-  <small>Delete removes the entry from your library. The files stay in your Mega account.</small>`;
-  $('#atr').onclick=()=>$('#trs').insertAdjacentHTML('beforeend',trRow());
-  $('#sv').onclick=save;
-  if($('#mc'))$('#mc').onclick=async e=>{
-    e.target.textContent='Connecting…';
-    try{MS=await new mega.Storage({email:$('#me').value,password:$('#mp').value}).ready;adminView()}
-    catch(x){e.target.textContent='Connect';alert('Mega sign-in failed: '+x.message)}
-  };
-}
-async function upl(file){
-  const ab=await file.arrayBuffer(),data=window.Buffer?Buffer.from(ab):new Uint8Array(ab);
-  const f=await MS.upload({name:file.name,size:file.size},data).complete;
-  return f.link();
-}
-async function save(){
-  const log=m=>$('#log').textContent=m;
-  if(!MS)return log('Connect Mega first.');
+/* ---------- boot ---------- */
+MM.gate('My Music',async()=>{
+  $('#shell').hidden=false;
   try{
-    const at=$('#at').value.trim(),ar=$('#ar').value.trim(),cover=$('#ac').files[0];
-    let album=null;
-    if(at){log('Uploading album art…');const cl=cover?await upl(cover):null;
-      [album]=await sb('/rest/v1/albums',{method:'POST',body:JSON.stringify({title:at,artist:ar,year:+$('#yr').value||null,cover_link:cl})})}
-    let n=0;const rows=$$('#trs .tr');
-    for(const r of rows){
-      const g=c=>r.querySelector(c),title=g('.t').value.trim();if(!title)continue;
-      const f1=g('.f1').files[0],f3=g('.f3').files[0],fa=g('.fa').files[0];
-      if(!f1&&!f3){log(`Skipped "${title}": no audio file.`);continue}
-      n++;log(`Uploading "${title}" (${n})…`);
-      const row={album_id:album?.id||null,title,artist:g('.ta').value.trim()||ar,track_no:n,
-        link_128:f1?await upl(f1):null,link_320:f3?await upl(f3):null,art_link:fa?await upl(fa):null};
-      await sb('/rest/v1/tracks',{method:'POST',body:JSON.stringify(row)});
-    }
-    log(`Done. Saved ${n} track(s).`);await load();
-  }catch(e){log('Failed: '+e.message)}
-}
-async function del(t,id){if(confirm('Delete this from your library?')){await sb(`/rest/v1/${t}?id=eq.${id}`,{method:'DELETE'});await load()}}
-
-/* ---------- Boot ---------- */
-async function boot(){
-  if(!S){$('#login').hidden=false;return}
-  $('#login').hidden=true;$('#app').hidden=false;
-  try{await load()}catch(e){$('#view').innerHTML='<p>Could not load your library: '+esc(e.message)+'</p>'}
-}
-$('#lg').onclick=async()=>{$('#le').textContent='';if(!$('#pw').value)return $('#le').textContent='Enter your password.';
-  try{await auth('password',{email:$('#em').value.trim(),password:$('#pw').value});boot()}catch(e){$('#le').textContent=e.message}
-};
-$('#sp').onclick=()=>{const p=$('#pw'),h=p.type==='password';p.type=h?'text':'password';$('#sp').textContent=h?'Hide':'Show';p.focus()};
-$('#pw').addEventListener('keydown',e=>{if(e.key==='Enter')$('#lg').click()});
-if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
-boot();
+    const [a,t]=await Promise.all([sb('/rest/v1/albums?select=*&order=created_at.desc'),sb('/rest/v1/tracks?select=*&order=created_at.desc')]);
+    albums=a.filter(pub);byAl=new Map(albums.map(x=>[x.id,x]));
+    tracks=t.filter(x=>pub(x)&&(!x.album_id||byAl.has(x.album_id)));
+  }catch(e){view.innerHTML=`<section class="panel"><h2>Could not load your library</h2><p class="mu">${esc(e.message)}</p></section>`;return}
+  route();
+});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
 </script></body></html>

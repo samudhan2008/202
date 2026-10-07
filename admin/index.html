@@ -1,0 +1,142 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Admin · My Music</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Figtree:wght@400;600;800&family=Syne:wght@600;800&family=Rubik:wght@400;500&family=Bowlby+One&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/style.css">
+<style>@media(max-width:800px){#side{display:flex!important;position:static;height:auto;flex-direction:row;flex-wrap:wrap;padding:10px;border-right:0}#side .brand,#side .sp{display:none}#shell{display:block}#view{padding-bottom:60px}}</style></head><body>
+<div id="shell" hidden>
+  <aside id="side"><div class="brand">♪ CMS</div>
+    <a href="#/">Dashboard</a><a href="#/albums">Albums</a><a href="#/tracks">Tracks</a><a href="#/settings">Settings</a>
+    <span class="sp"></span><a href="/" target="_blank">Open player ↗</a></aside>
+  <div id="main"><header id="top"><h2 id="pt"></h2><small id="who"></small></header><main id="view"></main></div>
+</div>
+<dialog id="dlg"></dialog>
+<script src="/assets/config.js"></script><script src="/assets/core.js"></script>
+<script>
+const {$,$$,esc,fmt,img,sb,toast}=MM,view=$('#view'),dlg=$('#dlg');
+let albums=[],tracks=[];
+const al=id=>albums.find(a=>a.id===id);
+const THEMES=[['frost','Frost'],['tide','Tide'],['glow','Afterglow'],['groove','Groove'],['pop','Pop'],['lyric','Lyric'],['dusk','Dusk']];
+async function load(){[albums,tracks]=await Promise.all([sb('/rest/v1/albums?select=*&order=created_at.desc'),sb('/rest/v1/tracks?select=*&order=created_at.desc')])}
+const badge=p=>`<span class="badge ${p===false?'draft':'live'}">${p===false?'Draft':'Published'}</span>`;
+const qtag=t=>`${t.link_320?'<span class="badge">320</span>':''}${t.link_128?'<span class="badge">128</span>':''}`||'<small>none</small>';
+const artFor=t=>t.art_link||al(t.album_id)?.cover_link;
+
+/* ---------- pages ---------- */
+function dash(){
+  const singles=tracks.filter(t=>!t.album_id).length,drafts=albums.filter(a=>a.published===false).length+tracks.filter(t=>t.published===false).length;
+  const st=(l,v,id)=>`<div class="panel stat"><small>${l}</small><b${id?` id="${id}"`:''}>${v}</b></div>`;
+  MM.usage().then(n=>{const e=$('#su');if(e)e.textContent=(n/1048576).toFixed(1)+' MB'}).catch(()=>{});
+  return `<div class="stats">${st('Albums',albums.length)}${st('Tracks',tracks.length)}${st('Singles',singles)}${st('Drafts',drafts)}${st('Storage used','…','su')}</div>
+  <div class="cols"><section class="panel"><h3>Recent tracks</h3>${tracks.slice(0,6).map(t=>`<div class="mrow">${img(artFor(t))}<div><b>${esc(t.title)}</b><br><small>${esc(t.artist||al(t.album_id)?.artist||'')}</small></div>${badge(t.published)}</div>`).join('')||'<p class="mu">No tracks yet.</p>'}</section>
+  <section class="panel"><h3>Quick actions</h3><div class="acts"><a class="btn pri" href="#/albums/new">+ New album</a><button class="btn" data-act="trk">+ Add single</button></div><p class="mu" style="margin-top:14px">Supabase free plan includes 1 GB of storage.</p></section></div>`;
+}
+const albumRows=f=>albums.filter(a=>!f||[a.title,a.artist,a.genre].join(' ').toLowerCase().includes(f)).map(a=>`<tr><td class="th">${img(a.cover_link)}</td><td><a href="#/albums/${a.id}"><b>${esc(a.title)}</b></a><br><small>${esc(a.artist||'')}</small></td><td>${a.year||''}</td><td>${esc(a.genre||'')}</td><td>${tracks.filter(t=>t.album_id===a.id).length}</td><td><button class="btn sm" data-act="tog" data-tb="albums" data-id="${a.id}" data-k="featured">${a.featured?'★ Featured':'☆'}</button></td><td><button class="badge-btn" data-act="tog" data-tb="albums" data-id="${a.id}" data-k="published" title="Toggle published">${badge(a.published)}</button></td><td class="ra"><a class="btn sm" href="#/albums/${a.id}">Edit</a> <button class="btn sm danger" data-act="dela" data-id="${a.id}">Delete</button></td></tr>`).join('')||'<tr><td colspan="8" class="mu">No albums found.</td></tr>';
+const albumsPage=()=>`<div class="bar"><input id="fs" placeholder="Search albums…" aria-label="Search albums"><a class="btn pri" href="#/albums/new">+ New album</a></div><div class="panel tw"><table class="t"><thead><tr><th></th><th>Album</th><th>Year</th><th>Genre</th><th>Tracks</th><th>Featured</th><th>Status</th><th></th></tr></thead><tbody id="ab">${albumRows('')}</tbody></table></div>`;
+
+const trackTable=l=>`<table class="t"><thead><tr><th>#</th><th></th><th>Title</th><th>Files</th><th>Time</th><th>Status</th><th></th></tr></thead><tbody>${l.map(t=>`<tr><td>${t.track_no||''}</td><td class="th">${img(artFor(t))}</td><td><b>${esc(t.title)}</b><br><small>${esc(t.artist||'')}${al(t.album_id)?' · '+esc(al(t.album_id).title):''}</small></td><td>${qtag(t)}</td><td>${fmt(t.duration)}</td><td><button class="badge-btn" data-act="tog" data-tb="tracks" data-id="${t.id}" data-k="published">${badge(t.published)}</button></td><td class="ra"><button class="btn sm" data-act="trk" data-id="${t.id}">Edit</button> <button class="btn sm danger" data-act="delt" data-id="${t.id}">Delete</button></td></tr>`).join('')||'<tr><td colspan="7" class="mu">No tracks yet.</td></tr>'}</tbody></table>`;
+const tracksPage=()=>`<div class="bar"><input id="ft" placeholder="Search tracks…" aria-label="Search tracks"><select id="fa" aria-label="Filter by album"><option value="">All albums</option><option value="-">Singles</option>${albums.map(a=>`<option value="${a.id}">${esc(a.title)}</option>`).join('')}</select><button class="btn pri" data-act="trk">+ Add track</button></div><div class="panel tw" id="tt">${trackTable(tracks)}</div>`;
+const filterTracks=()=>{const s=$('#ft').value.toLowerCase(),a=$('#fa').value;$('#tt').innerHTML=trackTable(tracks.filter(t=>(!s||[t.title,t.artist].join(' ').toLowerCase().includes(s))&&(!a||(a==='-'?!t.album_id:t.album_id===a))));MM.hydrate($('#tt'))};
+
+function albumEd(id){
+  const a=id==='new'?{published:true}:al(id);if(!a)return '<h2>Album not found</h2>';
+  const v=k=>esc(a[k]??'');
+  const l=tracks.filter(t=>t.album_id===a.id).sort((x,y)=>(x.track_no||0)-(y.track_no||0));
+  return `<form id="af" data-id="${id}" class="panel form"><div class="fg"><label>Title *<input name="title" required value="${v('title')}"></label><label>Artist<input name="artist" value="${v('artist')}"></label><label>Year<input name="year" type="number" min="1900" max="2100" value="${v('year')}"></label><label>Genre<input name="genre" value="${v('genre')}"></label></div>
+  <label>Description<textarea name="description" rows="3">${v('description')}</textarea></label>
+  <div class="up">${img(a.cover_link)}<label>Square album art<input type="file" name="cover" accept="image/*" data-prev></label></div>
+  <div class="fg"><label class="chk"><input type="checkbox" name="featured" ${a.featured?'checked':''}> Featured on the home page</label><label class="chk"><input type="checkbox" name="published" ${a.published!==false?'checked':''}> Published (visible in the player)</label></div>
+  <div class="acts"><button class="btn pri">${id==='new'?'Create album':'Save changes'}</button><a class="btn" href="#/albums">Back</a></div></form>`
+  +(id==='new'?'<p class="mu" style="margin-top:14px">After creating the album you can add its tracks.</p>':`<section class="panel tw"><div class="bar"><h3>Tracks (${l.length})</h3><button class="btn pri" data-act="trk" data-album="${a.id}">+ Add track</button></div>${trackTable(l)}</section>`);
+}
+function settings(){
+  return `<section class="panel"><h3>Account</h3><p class="mu" style="margin:6px 0 12px">${esc(MM.user()?.email||'')}</p><button class="btn" data-act="out">Sign out</button></section>
+  <section class="panel"><h3>Appearance</h3><div class="chips">${THEMES.map(([k,n])=>`<button class="btn${document.documentElement.dataset.t===k?' pri':''}" data-act="theme" data-v="${k}">${n}</button>`).join('')}</div></section>
+  <section class="panel"><h3>Backup</h3><p class="mu" style="margin:6px 0 12px">Download your library data (titles, metadata, file references) as JSON.</p><button class="btn" data-act="export">Export JSON</button></section>`;
+}
+const R=[[/^\/?$/,'Dashboard',dash],[/^\/albums$/,'Albums',albumsPage],[/^\/albums\/(.+)$/,'Album',albumEd],[/^\/tracks$/,'Tracks',tracksPage],[/^\/settings$/,'Settings',settings]];
+function route(){
+  const h=location.hash.slice(1)||'/';
+  for(const [r,t,f] of R){const m=h.match(r);if(m){
+    $('#pt').textContent=t!=='Album'?t:m[1]==='new'?'New album':(al(m[1])?.title||'Album');
+    view.innerHTML=f(...m.slice(1));MM.hydrate(view);
+    $$('#side a[href^="#"]').forEach(a=>{const p=a.getAttribute('href').slice(1);a.classList.toggle('on',p==='/'?h==='/':h.startsWith(p))});return}}
+  view.innerHTML='<h2>Not found</h2>';
+}
+addEventListener('hashchange',route);
+
+/* ---------- editing ---------- */
+async function saveAlbum(f){
+  const id=f.dataset.id,fd=new FormData(f),file=fd.get('cover'),btn=$('.pri',f),old=id==='new'?null:al(id);
+  const body={title:fd.get('title').trim(),artist:fd.get('artist').trim()||null,year:+fd.get('year')||null,genre:fd.get('genre').trim()||null,description:fd.get('description').trim()||null,featured:!!fd.get('featured'),published:!!fd.get('published')};
+  btn.disabled=true;btn.textContent='Saving…';
+  try{
+    if(file?.size){body.cover_link=await MM.upload(file)}
+    if(body.featured)await sb('/rest/v1/albums?featured=eq.true',{method:'PATCH',body:JSON.stringify({featured:false})});
+    const r=old?await sb('/rest/v1/albums?id=eq.'+id,{method:'PATCH',body:JSON.stringify(body)}):await sb('/rest/v1/albums',{method:'POST',body:JSON.stringify(body)});
+    if(file?.size&&old?.cover_link)MM.removeFiles([old.cover_link]);
+    await load();toast('Album saved');
+    if(location.hash==='#/albums/'+r[0].id)route();else location.hash='#/albums/'+r[0].id;
+  }catch(e){toast(e.message,1);btn.disabled=false;btn.textContent=old?'Save changes':'Create album'}
+}
+function openTrack(id,albumId){
+  const t=id?tracks.find(x=>x.id===id):{album_id:albumId||null,published:true,track_no:albumId?tracks.filter(x=>x.album_id===albumId).length+1:1};
+  const v=k=>esc(t[k]??''),ok=l=>l?'<small>✓ uploaded — choose a file to replace</small>':'';
+  dlg.innerHTML=`<form id="tf" data-id="${id||''}" class="form"><h3>${id?'Edit track':'Add track'}</h3>
+  <div class="fg"><label>Title *<input name="title" required value="${v('title')}"></label><label>Artist<input name="artist" value="${v('artist')}"></label><label>Track no.<input name="track_no" type="number" min="1" value="${v('track_no')}"></label>
+  <label>Album<select name="album_id"><option value="">Single (no album)</option>${albums.map(a=>`<option value="${a.id}" ${a.id===t.album_id?'selected':''}>${esc(a.title)}</option>`).join('')}</select></label></div>
+  <div class="fg"><label>128 kbps audio ${ok(t.link_128)}<input type="file" name="f128" accept="audio/*"></label><label>320 kbps audio ${ok(t.link_320)}<input type="file" name="f320" accept="audio/*"></label></div>
+  <div class="up">${img(t.art_link)}<label>Square track art (optional — falls back to album art)<input type="file" name="art" accept="image/*" data-prev></label></div>
+  <label class="chk"><input type="checkbox" name="published" ${t.published!==false?'checked':''}> Published</label>
+  <p class="err" id="te"></p><div class="acts"><button class="btn pri">Save track</button><button type="button" class="btn" data-act="close">Cancel</button></div></form>`;
+  MM.hydrate(dlg);dlg.showModal();
+}
+async function saveTrack(f){
+  const id=f.dataset.id,old=id?tracks.find(t=>t.id===id):null,fd=new FormData(f),btn=$('.pri',f);
+  const body={title:fd.get('title').trim(),artist:fd.get('artist').trim()||null,track_no:+fd.get('track_no')||1,album_id:fd.get('album_id')||null,published:!!fd.get('published')};
+  const files={link_128:fd.get('f128'),link_320:fd.get('f320'),art_link:fd.get('art')};
+  if(!old&&!files.link_128?.size&&!files.link_320?.size)return $('#te').textContent='Choose at least one audio file (128 or 320 kbps).';
+  btn.disabled=true;const gone=[];
+  try{
+    for(const [k,file] of Object.entries(files))if(file?.size){btn.textContent='Uploading '+(k==='art_link'?'art':k.slice(5)+' kbps')+'…';body[k]=await MM.upload(file);if(old?.[k])gone.push(old[k])}
+    const df=files.link_320?.size?files.link_320:files.link_128?.size?files.link_128:null;
+    if(df)body.duration=await MM.duration(df);
+    btn.textContent='Saving…';
+    old?await sb('/rest/v1/tracks?id=eq.'+id,{method:'PATCH',body:JSON.stringify(body)}):await sb('/rest/v1/tracks',{method:'POST',body:JSON.stringify(body)});
+    MM.removeFiles(gone);dlg.close();await load();toast('Track saved');route();
+  }catch(e){$('#te').textContent=e.message;btn.disabled=false;btn.textContent='Save track'}
+}
+const links=r=>[r?.cover_link,r?.art_link,r?.link_128,r?.link_320];
+const A={
+  trk:b=>openTrack(b.dataset.id,b.dataset.album),close:()=>dlg.close(),out:MM.signOut,
+  theme:b=>{document.documentElement.dataset.t=localStorage.mm_theme=b.dataset.v;route()},
+  tog:async b=>{
+    const {tb,id,k}=b.dataset,cur=(tb==='albums'?albums:tracks).find(x=>x.id===id),val=k==='featured'?!cur.featured:cur.published===false;
+    try{if(k==='featured'&&val)await sb('/rest/v1/albums?featured=eq.true',{method:'PATCH',body:JSON.stringify({featured:false})});
+      await sb(`/rest/v1/${tb}?id=eq.${id}`,{method:'PATCH',body:JSON.stringify({[k]:val})});await load();route()}catch(e){toast(e.message,1)}},
+  dela:async b=>{
+    const a=al(b.dataset.id),n=tracks.filter(t=>t.album_id===a.id);
+    if(!confirm(`Delete “${a.title}” and its ${n.length} track(s)? Files are removed too.`))return;
+    try{await sb('/rest/v1/albums?id=eq.'+a.id,{method:'DELETE'});await MM.removeFiles([...links(a),...n.flatMap(links)]);await load();toast('Album deleted');location.hash='#/albums';route()}catch(e){toast(e.message,1)}},
+  delt:async b=>{
+    const t=tracks.find(x=>x.id===b.dataset.id);if(!confirm(`Delete “${t.title}”? Files are removed too.`))return;
+    try{await sb('/rest/v1/tracks?id=eq.'+t.id,{method:'DELETE'});await MM.removeFiles(links(t));await load();toast('Track deleted');route()}catch(e){toast(e.message,1)}},
+  export:()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({albums,tracks},null,2)],{type:'application/json'}));a.download='my-music-library.json';a.click()}
+};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(b&&A[b.dataset.act])A[b.dataset.act](b)});
+document.addEventListener('submit',e=>{const f=e.target;if(f.id==='af'||f.id==='tf'){e.preventDefault();(f.id==='af'?saveAlbum:saveTrack)(f)}});
+document.addEventListener('change',e=>{
+  const i=e.target;
+  if(i.matches('[data-prev]')&&i.files[0]){const box=i.closest('.up');box.firstElementChild.outerHTML=`<img src="${URL.createObjectURL(i.files[0])}" alt="">`}
+  if(i.id==='fa')filterTracks();
+});
+document.addEventListener('input',e=>{
+  if(e.target.id==='fs'){$('#ab').innerHTML=albumRows(e.target.value.toLowerCase());MM.hydrate($('#ab'))}
+  if(e.target.id==='ft')filterTracks();
+});
+
+MM.gate('Admin',async()=>{
+  $('#shell').hidden=false;$('#who').textContent=MM.user()?.email||'';
+  try{await load()}catch(e){view.innerHTML=`<section class="panel"><h2>Could not load</h2><p class="mu">${esc(e.message)}</p><p class="mu">Did you run schema.sql in Supabase?</p></section>`;return}
+  route();
+});
+</script></body></html>

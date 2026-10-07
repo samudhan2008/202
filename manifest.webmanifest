@@ -1,1 +1,1 @@
-{"name":"My Music","short_name":"My Music","start_url":"./","display":"standalone","background_color":"#e4f0fa","theme_color":"#e4f0fa","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
+{"name":"My Music","short_name":"My Music","start_url":"/","scope":"/","display":"standalone","background_color":"#e4f0fa","theme_color":"#e4f0fa","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}

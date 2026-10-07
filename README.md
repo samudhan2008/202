@@ -1,10 +1,13 @@
 # My Music
-Personal music library. Frontend: static (Vercel). Database: Supabase. Files: Mega.
+Private music library. Static frontend (Vercel) + Supabase (database, auth, file storage).
 
-1. Supabase: run `schema.sql`, disable sign-ups, create your one user.
-2. Edit `CFG` near the bottom of `index.html` (Supabase URL + anon key).
-3. Push to GitHub, import into Vercel (framework: Other, no build step).
-4. Open the site on your phone, Add to Home Screen.
+- `/` — player: Home, Albums, Album page, Songs, Search, Settings, 7 themes
+- `/admin` — CMS: dashboard, albums, tracks (128/320 kbps + square art), publish/draft, featured, export
 
-Themes: Frost, Tide, Afterglow, Groove, Pop, Lyric, Dusk (picker in the top bar).
-Uploads: Admin tab > connect Mega > add album or singles (128 + 320 kbps audio, square album art, square track art).
+## Setup
+1. Supabase: SQL editor > run `schema.sql`. Auth > disable sign-ups, create your user (Auto Confirm).
+2. Edit `assets/config.js` with your Supabase URL + anon key.
+3. Push to GitHub, import in Vercel (Framework: Other, no build command).
+4. Open the site on your phone > Add to Home Screen.
+
+Legacy Mega links keep playing; new uploads go to the private Supabase `music` bucket.
